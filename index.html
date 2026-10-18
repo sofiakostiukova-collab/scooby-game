@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mystery Inc.: раскрой дело · АиК</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1f1630; --card:#fff8ec; --ink:#2b1b3d; --muted:#6d5f7c;
+    --orange:#f28c28; --teal:#22a99a; --lime:#a8d04a; --purple:#7b4fb0;
+    --ok:#1e9e6a; --bad:#d9463b; --line:#e8dcc6;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:Rubik,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); min-height:100vh;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(242,140,40,.25) 0 90px, transparent 91px),
+      radial-gradient(circle at 90% 30%, rgba(34,169,154,.22) 0 120px, transparent 121px),
+      radial-gradient(circle at 20% 90%, rgba(168,208,74,.18) 0 110px, transparent 111px);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:440px;margin:0 auto;padding:16px 14px 40px}
+  .top{display:flex;align-items:center;justify-content:space-between;color:#fff;margin-bottom:12px;font-weight:600;font-size:14px}
+  .brand{display:flex;gap:8px;align-items:center}
+  .brand b{font-weight:900;letter-spacing:.5px;color:var(--orange)}
+  .pill{background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px}
+  .bar{height:8px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-bottom:14px}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--lime));transition:width .3s}
+  .card{background:var(--card);border-radius:22px;padding:22px 18px;box-shadow:0 10px 0 rgba(0,0,0,.25);position:relative;overflow:hidden}
+  .card:before{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:repeating-linear-gradient(90deg,var(--orange) 0 40px,var(--teal) 40px 80px,var(--lime) 80px 120px)}
+  h1{font-size:28px;line-height:1.1;margin:8px 0 10px;font-weight:900}
+  h2{font-size:22px;margin:6px 0 8px;font-weight:900}
+  .tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--purple);padding:5px 10px;border-radius:8px}
+  p{line-height:1.45;margin:8px 0}
+  .muted{color:var(--muted);font-size:14px}
+  .q{font-size:21px;font-weight:600;line-height:1.35;margin:14px 0 16px}
+  .q .blank{display:inline-block;min-width:48px;border-bottom:3px solid var(--orange);text-align:center}
+  .opts{display:grid;gap:10px}
+  button{font-family:inherit;cursor:pointer}
+  .opt{width:100%;text-align:left;font-size:18px;font-weight:600;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);transition:transform .05s}
+  .opt:active{transform:scale(.98)}
+  .opt.ok{border-color:var(--ok);background:#e7f7ef}
+  .opt.bad{border-color:var(--bad);background:#fdebea}
+  .opt[disabled]{cursor:default}
+  .btn{width:100%;font-size:18px;font-weight:800;padding:15px;border-radius:14px;border:0;background:var(--orange);color:#fff;box-shadow:0 5px 0 #b8611a;margin-top:16px}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #b8611a}
+  .btn.alt{background:var(--teal);box-shadow:0 5px 0 #157a6f}
+  .btn.ghost{background:transparent;color:var(--ink);box-shadow:none;border:2px solid var(--line);font-weight:600}
+  input[type=text]{width:100%;font-family:inherit;font-size:20px;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);outline:none}
+  input[type=text]:focus{border-color:var(--teal)}
+  .fb{margin-top:14px;padding:12px 14px;border-radius:14px;font-size:16px;line-height:1.4;display:none}
+  .fb.show{display:block}
+  .fb.ok{background:#e7f7ef;border:2px solid var(--ok)}
+  .fb.bad{background:#fdebea;border:2px solid var(--bad)}
+  .fb b{display:block;margin-bottom:2px}
+  .round-ico{font-size:52px;line-height:1;margin:6px 0}
+  .stmt{font-size:19px;font-weight:600;line-height:1.4;background:#fff;border:2px dashed var(--purple);border-radius:14px;padding:14px;margin:12px 0}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .badge{background:linear-gradient(160deg,#2b1b3d,#4a2c6d);color:#fff;border-radius:20px;padding:56px 18px 22px;text-align:center;position:relative}
+  .badge .big{font-size:56px;font-weight:900;color:var(--lime);line-height:1}
+  .badge .name{font-size:26px;font-weight:900;margin:6px 0 2px;color:#fff;word-break:break-word}
+  .badge .rank{display:inline-block;margin-top:8px;background:var(--orange);padding:6px 12px;border-radius:999px;font-weight:800}
+  .badge .stamp{position:absolute;top:12px;right:12px;border:3px solid var(--lime);color:var(--lime);border-radius:10px;padding:3px 8px;font-size:12px;font-weight:900;transform:rotate(8deg);letter-spacing:1px}
+  .small{font-size:13px;color:#cdbfe0;margin-top:10px}
+  .center{text-align:center}
+  .hidden{display:none}
+  .footer{color:#bfb0d6;font-size:12px;text-align:center;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">🔍 <b>MYSTERY INC.</b></div>
+    <div class="pill" id="score">улики: 0</div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="card" id="screen"></div>
+  <div class="footer">английский и котики · неделя 6 · зиро</div>
+</div>
+
+<script>
+// ---------- ДАННЫЕ ----------
+const ROUNDS = [
+ { id:'r1', ico:'🖐️', title:'Раунд 1 · Отпечатки пальцев',
+   intro:'На месте преступления нашли отпечатки. Каждый отпечаток — это форма глагола. Напиши вторую форму (Past Simple) одним словом.',
+   type:'input', take:4,
+   pool:[
+    ['go','went','go – went – gone'],['see','saw','see – saw – seen'],['find','found','find – found – found'],
+    ['run','ran','run – ran – run'],['take','took','take – took – taken'],['hear','heard','hear – heard – heard'],
+    ['leave','left','leave – left – left'],['come','came','come – came – come'],['know','knew','know – knew – known'],
+    ['tell','told','tell – told – told'],['think','thought','think – thought – thought'],['write','wrote','write – wrote – written'],
+    ['get','got','get – got – got'],['make','made','make – made – made']
+   ].map(([v,a,e])=>({q:`<b>${v}</b> → <span class="blank">?</span>`, a:[a], why:e}))
+ },
+ { id:'r2', ico:'🕰️', title:'Раунд 2 · Алиби',
+   intro:'Подозреваемый говорит, где был. Алиби держится на предлогах времени: at, on, in.',
+   type:'mc', take:4,
+   pool:[
+    {q:'I was at home ___ Monday.', o:['on','in','at'], a:'on', why:'Дни недели → on: on Monday.'},
+    {q:'The party started ___ seven o’clock.', o:['at','on','in'], a:'at', why:'Точное время → at: at seven o’clock.'},
+    {q:'We moved to this town ___ July.', o:['in','on','at'], a:'in', why:'Месяцы → in: in July.'},
+    {q:'He walks his dog ___ the morning.', o:['in','on','at'], a:'in', why:'Части дня → in: in the morning (но at night).'},
+    {q:'I was asleep ___ night.', o:['at','in','on'], a:'at', why:'Исключение: at night.'},
+    {q:'The museum opened ___ 1990.', o:['in','on','at'], a:'in', why:'Годы → in: in 1990.'},
+    {q:'My birthday is ___ 5 October.', o:['on','in','at'], a:'on', why:'Даты → on: on 5 October.'},
+    {q:'We go to the sea ___ summer.', o:['in','on','at'], a:'in', why:'Времена года → in: in summer.'},
+    {q:'He was at home ___ Monday ___ seven o’clock.', o:['on / at','in / at','at / on'], a:'on / at', why:'День → on, точное время → at.'}
+   ]
+ },
+ { id:'r3', ico:'🗣️', title:'Раунд 3 · Показания свидетелей',
+   intro:'Свидетели путают привычки и то, что происходит прямо сейчас. Помоги им: Present Simple или Present Continuous?',
+   type:'mc', take:4,
+   pool:[
+    {q:'Look! The man ___ to the gate.', o:['is running','runs'], a:'is running', why:'Look! → прямо сейчас → Present Continuous.'},
+    {q:'He usually ___ his dog in the park.', o:['walks','is walking'], a:'walks', why:'usually → привычка → Present Simple.'},
+    {q:'Shh! Someone ___ upstairs.', o:['is talking','talks'], a:'is talking', why:'Shh! Слышим сейчас → Present Continuous.'},
+    {q:'The gardener ___ to work at 8 every day.', o:['comes','is coming'], a:'comes', why:'every day → регулярно → Present Simple.'},
+    {q:'I can’t talk now. I ___ dinner.', o:['am cooking','cook'], a:'am cooking', why:'now → процесс сейчас → am cooking.'},
+    {q:'What ___ you ___ right now?', o:['are … doing','do … do'], a:'are … doing', why:'right now → What are you doing?'},
+    {q:'How often ___ he ___ the dog?', o:['does … walk','is … walking'], a:'does … walk', why:'How often → привычка → does … walk.'},
+    {q:'Miss White ___ coffee. She drinks tea.', o:['doesn’t like','isn’t liking'], a:'doesn’t like', why:'like — глагол состояния, в Continuous не ставим.'}
+   ]
+ },
+ { id:'r4', ico:'🧾', title:'Раунд 4 · Список улик',
+   intro:'Считаем улики. Исчисляемое или нет? Много или мало? There is или there are?',
+   type:'mc', take:4,
+   pool:[
+    {q:'There ___ a lot of footprints near the door.', o:['are','is'], a:'are', why:'footprints — мн. число → there are.'},
+    {q:'There ___ some water on the floor.', o:['is','are'], a:'is', why:'water — неисчисляемое → there is.'},
+    {q:'How ___ money did he have?', o:['much','many'], a:'much', why:'money — неисчисляемое → much.'},
+    {q:'How ___ keys are in the box?', o:['many','much'], a:'many', why:'keys — исчисляемое мн. ч. → many.'},
+    {q:'We found ___ clues — only three.', o:['a few','a little'], a:'a few', why:'clues можно посчитать → a few.'},
+    {q:'Hurry! There isn’t ___ time!', o:['much','many'], a:'much', why:'time — неисчисляемое → much.'},
+    {q:'Three ___ saw the ghost.', o:['children','childs'], a:'children', why:'child → children (неправильное мн. число).'},
+    {q:'Two ___ were in the kitchen.', o:['women','womans'], a:'women', why:'woman → women.'},
+    {q:'There ___ two men in the garden.', o:['were','was'], a:'were', why:'two men — мн. число → there were.'}
+   ]
+ },
+ { id:'r5', ico:'🎭', title:'Раунд 5 · Словесный портрет',
+   intro:'Составляем портрет подозреваемого: сравниваем и подбираем правильное слово.',
+   type:'mc', take:4,
+   pool:[
+    {q:'He is ___ than his brother.', o:['taller','more tall'], a:'taller', why:'Короткое прилагательное → -er: taller.'},
+    {q:'This is the ___ room in the house.', o:['most dangerous','dangerousest'], a:'most dangerous', why:'Длинное прилагательное → the most dangerous.'},
+    {q:'It was the ___ night of the year.', o:['worst','baddest'], a:'worst', why:'bad – worse – the worst.'},
+    {q:'She is ___ than me: she checks everything twice.', o:['more careful','carefuller'], a:'more careful', why:'careful → more careful.'},
+    {q:'He always loses his keys. He is very ___.', o:['careless','careful'], a:'careless', why:'-less = «без»: careless — небрежный.'},
+    {q:'She is a ___ cook!', o:['wonderful','wonderless'], a:'wonderful', why:'-ful = «полный»: wonderful.'},
+    {q:'Their ___ is very strong.', o:['friendship','friendful'], a:'friendship', why:'-ship → существительное: friendship.'},
+    {q:'The ___ of the machine changed everything.', o:['invention','inventful'], a:'invention', why:'invent + -tion → invention.'}
+   ]
+ }
+];
+const FINAL = {
+ ico:'👻', title:'Финал · Снять маску',
+ intro:'Перед тобой показания подозреваемого. В трёх предложениях из шести есть ошибка. Найди их и исправь — так мы сорвём маску!',
+ items:[
+  {s:'I usually walk my dog in the evening.', err:false, why:'Всё верно: usually → Present Simple, in the evening.'},
+  {s:'Yesterday I go to the old house at seven o’clock.', err:true, o:['went','goes','going'], a:'went', why:'Yesterday → Past Simple: go → went.'},
+  {s:'There were a lot of people in the garden.', err:false, why:'Всё верно: people — мн. число → there were.'},
+  {s:'The second popular response is reading.', err:true, o:['The second most popular','The most second popular','The second more popular'], a:'The second most popular', why:'В эссе: the second most popular — «второй по популярности».'},
+  {s:'I was at home on Monday.', err:false, why:'Всё верно: on Monday.'},
+  {s:'In the picture I can see a man with dog.', err:true, o:['a dog','the dogs','dog’s'], a:'a dog', why:'Один предмет, упоминаем впервые → a dog.'}
+ ]
+};
+
+// ---------- УТИЛИТЫ ----------
+const $ = s => document.querySelector(s);
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const store = { get(k){ try{return localStorage.getItem(k);}catch(e){return null;} }, set(k,v){ try{localStorage.setItem(k,v);}catch(e){} } };
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => s.trim().toLowerCase().replace(/[’`]/g,"'");
+
+let state;
+function newGame(name){
+  const rounds = ROUNDS.map(r => ({...r, qs: shuffle(r.pool).slice(0, r.take).map(q => r.type==='mc' ? {...q, o: shuffle(q.o)} : q)}));
+  const final = shuffle(FINAL.items).map(it => it.err ? {...it, o: shuffle(it.o)} : it);
+  const total = rounds.reduce((s,r)=>s+r.qs.length,0) + final.length + final.filter(i=>i.err).length;
+  state = { name, rounds, final, total, score:0, done:0, ri:0, qi:-1, fi:-1 };
+}
+function setScore(){ $('#score').textContent = `улики: ${state ? state.score : 0}`; $('#bar').style.width = state ? (100*state.done/state.total)+'%' : '0'; }
+function render(html){ $('#screen').innerHTML = html; window.scrollTo({top:0, behavior:'smooth'}); }
+
+// ---------- ЭКРАНЫ ----------
+function start(){
+  state = null; setScore();
+  const best = store.get('mi_best');
+  render(`
+    <span class="tag">дело №6</span>
+    <h1>Mystery Inc.:<br>раскрой дело</h1>
+    <p>В старом доме что-то случилось. Пройди 5 раундов, собери улики и сорви маску с подозреваемого.</p>
+    <p class="muted">⏱ 7–10 минут · ответ — вариант или одно слово · проходить можно сколько угодно</p>
+    ${best ? `<p class="muted">🏆 твой рекорд: <b>${esc(best)}</b></p>` : ''}
+    <p style="margin-top:16px"><b>Как зовут детектива?</b></p>
+    <input type="text" id="nm" maxlength="24" placeholder="твоё имя или ник" value="${esc(store.get('mi_name')||'')}" autocomplete="off">
+    <button class="btn" id="go">Начать расследование 🔍</button>
+  `);
+  $('#go').onclick = () => { const n = ($('#nm').value.trim() || 'Детектив'); store.set('mi_name', n); newGame(n); setScore(); roundIntro(); };
+  $('#nm').onkeydown = e => { if(e.key==='Enter') $('#go').click(); };
+}
+function roundIntro(){
+  const r = state.rounds[state.ri];
+  render(`<div class="round-ico">${r.ico}</div><span class="tag">раунд ${state.ri+1} из 5</span><h2>${r.title.split('·')[1].trim()}</h2><p>${r.intro}</p><button class="btn alt" id="go">Поехали</button>`);
+  $('#go').onclick = () => { state.qi = 0; question(); };
+}
+function question(){
+  const r = state.rounds[state.ri], q = r.qs[state.qi];
+  const head = `<span class="tag">${r.ico} ${r.title.split('·')[1].trim()} · ${state.qi+1}/${r.qs.length}</span>`;
+  if(r.type==='input'){
+    render(`${head}<div class="q">${q.q}</div>
+      <input type="text" id="ans" placeholder="вторая форма" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button class="btn" id="chk">Проверить</button><div class="fb" id="fb"></div>`);
+    const inp = $('#ans'); inp.focus();
+    const check = () => {
+      if(!inp.value.trim()) return;
+      const ok = q.a.includes(norm(inp.value));
+      inp.disabled = true; feedback(ok, ok ? 'Улика найдена! ✅' : `Почти! Правильно: <b>${q.a[0]}</b>`, q.why);
+    };
+    $('#chk').onclick = check; inp.onkeydown = e => { if(e.key==='Enter') check(); };
+  } else {
+    render(`${head}<div class="q">${esc(q.q).replace(/___/g,'<span class="blank">&nbsp;</span>')}</div>
+      <div class="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div class="fb" id="fb"></div>`);
+    document.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+      const pick = q.o[+b.dataset.i], ok = pick === q.a;
+      document.querySelectorAll('.opt').forEach(x => { x.disabled = true; if(q.o[+x.dataset.i]===q.a) x.classList.add('ok'); });
+      if(!ok) b.classList.add('bad');
+      feedback(ok, ok ? 'Улика найдена! ✅' : `Мимо! Правильно: <b>${esc(q.a)}</b>`, q.why);
+    });
+  }
+}
+function feedback(ok, title, why){
+  if(ok) state.score++; state.done++; setScore();
+  const fb = $('#fb'); fb.className = 'fb show ' + (ok ? 'ok' : 'bad');
+  fb.innerHTML = `<b>${title}</b>${esc(why)}`;
+  const chk = $('#chk'); if(chk) chk.remove();
+  const nb = document.createElement('button'); nb.className='btn'; nb.textContent='Дальше →'; nb.onclick = next; $('#screen').appendChild(nb); nb.focus();
+}
+function next(){
+  const r = state.rounds[state.ri];
+  if(state.qi < r.qs.length-1){ state.qi++; question(); return; }
+  if(state.ri < state.rounds.length-1){ state.ri++; roundIntro(); return; }
+  finalIntro();
+}
+function finalIntro(){
+  render(`<div class="round-ico">${FINAL.ico}</div><span class="tag">финал</span><h2>Снять маску</h2><p>${FINAL.intro}</p><button class="btn alt" id="go">Читать показания</button>`);
+  $('#go').onclick = () => { state.fi = 0; finalQ(); };
+}
+function finalQ(){
+  const it = state.final[state.fi];
+  render(`<span class="tag">👻 показание ${state.fi+1}/${state.final.length}</span>
+    <div class="stmt">«${esc(it.s)}»</div>
+    <p><b>Есть ошибка?</b></p>
+    <div class="row"><button class="opt" id="yes">Да, ошибка</button><button class="opt" id="no">Нет, всё верно</button></div>
+    <div id="fix"></div><div class="fb" id="fb"></div>`);
+  const judge = said => {
+    $('#yes').disabled = $('#no').disabled = true;
+    const ok = said === it.err;
+    (said ? $('#yes') : $('#no')).classList.add(ok ? 'ok' : 'bad');
+    if(ok) state.score++; state.done++; setScore();
+    if(it.err){
+      // всегда даём исправить ошибку (даже если не заметили — учимся)
+      const pre = ok ? '<b>Верно, тут ошибка!</b> Как исправить?' : '<b>А тут ошибка была!</b> Как исправить?';
+      $('#fix').innerHTML = `<p style="margin-top:14px">${pre}</p><div class="opts">${it.o.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>`;
+      document.querySelectorAll('#fix .opt').forEach(b => b.onclick = () => {
+        const pick = it.o[+b.dataset.i], good = pick === it.a;
+        document.querySelectorAll('#fix .opt').forEach(x => { x.disabled = true; if(it.o[+x.dataset.i]===it.a) x.classList.add('ok'); });
+        if(!good) b.classList.add('bad');
+        feedbackFinal(good, good ? 'Маска трещит! ✅' : `Правильно: <b>${esc(it.a)}</b>`, it.why);
+      });
+    } else {
+      // на верные предложения счёт за «исправление» не нужен
+      feedbackFinal(null, ok ? 'Точно, тут всё чисто ✅' : 'Здесь ошибки не было', it.why);
+    }
+  };
+  $('#yes').onclick = () => judge(true); $('#no').onclick = () => judge(false);
+}
+function feedbackFinal(ok, title, why){
+  if(ok===true) state.score++;
+  if(ok!==null) state.done++;
+  setScore();
+  const good = ok===null ? !title.startsWith('Здесь') : ok;
+  const fb = $('#fb'); fb.className = 'fb show ' + (good ? 'ok' : 'bad');
+  fb.innerHTML = `<b>${title}</b>${esc(why)}`;
+  const nb = document.createElement('button'); nb.className='btn'; nb.textContent = state.fi < state.final.length-1 ? 'Следующее показание →' : 'Сорвать маску! 👻';
+  nb.onclick = () => { if(state.fi < state.final.length-1){ state.fi++; finalQ(); } else finish(); };
+  $('#screen').appendChild(nb); nb.focus();
+}
+function finish(){
+  const pct = state.score / state.total;
+  const rank = pct >= .8 ? 'Детектив недели 🔍' : pct >= .5 ? 'Детектив Mystery Inc.' : 'Стажёр агентства';
+  const line = pct >= .8 ? 'Дело раскрыто, маска сорвана! Ты лучший детектив недели.' : pct >= .5 ? 'Дело почти раскрыто! Пройди ещё раз — вопросы будут другие.' : 'Подозреваемый пока на свободе. Посмотри лекцию недели и попробуй снова!';
+  const prev = store.get('mi_best'); const cur = `${state.score}/${state.total}`;
+  if(!prev || state.score > parseInt(prev)) store.set('mi_best', cur);
+  const d = new Date().toLocaleDateString('ru-RU');
+  render(`
+    <div class="badge">
+      <div class="stamp">CASE CLOSED</div>
+      <div style="font-size:14px;letter-spacing:2px;color:#cdbfe0">MYSTERY INC. · ДЕЛО №6</div>
+      <div class="name">${esc(state.name)}</div>
+      <div class="big">${state.score}<span style="font-size:24px;color:#fff">/${state.total}</span></div>
+      <div style="color:#fff">улик собрано</div>
+      <div class="rank">${rank}</div>
+      <div class="small">${d} · английский и котики</div>
+    </div>
+    <p class="center" style="margin-top:14px">${line}</p>
+    <p class="center muted">📸 Сделай скрин этой карточки и кинь в чат курса!</p>
+    <button class="btn" id="again">Пройти ещё раз</button>
+    <button class="btn ghost" id="home">На главную</button>
+  `);
+  $('#again').onclick = () => { newGame(state.name); setScore(); roundIntro(); };
+  $('#home').onclick = start;
+}
+start();
+</script>
+</body>
+</html>
